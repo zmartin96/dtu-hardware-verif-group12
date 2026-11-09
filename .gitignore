@@ -1,0 +1,5 @@
+.venv
+*.fst
+__pycache__
+sim_build
+results.xml
