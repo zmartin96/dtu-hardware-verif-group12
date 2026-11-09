@@ -1,0 +1,37 @@
+ID,Design requirement ,Coverage,Verification Criteria,Priority,Type,Comment,Priority Comment
+1,DR1,rst,resets,Medium,Design,,Not strictly necessary for functionality. Still a somewhat need to have. Design would still work without technically.
+2,DR2,N/A,Signals react on Posedge,Medium,Design,,Same as rst. Here it will break some cases if violated. But design will probably still work if not fully followed
+3,DR3,Manual inspection,"3 CIFs, 1 MIF, 1 APB",High,Design,"Can we connect the required components in the testbench?
+Test with n+1 see if it breaks?",Everything assumes these counts. So it is important that they are met.
+4,DR4,Priority of clients configurable by registers,,Low,Design,,This is just implementation specific. DR5 is the more important one.
+5,DR5,Priority of clients can change dynamically,,High,Design,,Part of the functionality is that memory can be arbitted dynamically
+6,DR6,MARB must be disabled when changing dynamic priority,enable=0 when changing dynamic priority,Medium,Design,,Not strictly necessary for immediate functionality.
+7,DR7,current client & values [0:2] ,"Before re-enabling the Memory Arbiter after 
+a dynmaic priority change, the internal sort 
+algorithm must be finished
+when memory arbiter en=1, current client/values are sorted",Low,Design,"After 6 cycles then MARB is 
+re-enabled","Should this not happen, default order must be used, in which case the functionality overall still works. "
+8,DR8,Active coverage,Only one ack high,High,Design,,"Unknown what happens in this scenario, as such this is critical"
+9,DR9,Active coverage,"Order should be respected, and default fallback",Medium,Design,"Maybe pounce all CIFs at the same time, and also test with same priority","it is not critical, but still important, that the order is followed. Nothing major breaks should the order not be respected once every 100th time"
+10,DR10,Active coverage,Ack should go high,High,Design,,"it is critical for the CIFs to know when they can read their data, or when they can stop sending write dat"
+11,DR11,18-20,18-20,High,Design,,"If we cannot trust the protocols, the modules become unusable"
+12,DR12,15-17,15-17,High,Design,,"If we cannot trust the protocols, the modules become unusable"
+13,DR13,Active coverage,"If MIF Ack high, CRC should be valid",Medium,Design,,"CRC is good, but it does not seem to break overall functionality if unusable"
+14,DR14,Reference model,input/output of DUT match reference model,Medium,Design,,"CRC is good, but it does not seem to break overall functionality if unusable"
+15,PR1,"Reset + release;
+entry: idle,
+active","Reset checker:
+rst==1:
+valid==!1",High,Protocol,sSDT,"If we cannot trust the protocols, the modules become unusable"
+16,PR2,"Data:
+0, [1:MAX-1], MAX","Data checker:
+(rst==0 &&) valid==1:
+no X/Z",High,Protocol,sSDT,--||--
+17,PR3,"Idle seen;
+active-to-idle","Idle checker:
+valid==0:
+data==0",High,Protocol,sSDT,--||--
+18,"When ack and rd are high, rd_data must be valid",rd_data,(rd_data || ack) && rd_data != X,High,Protocol,SDT. rst does nothing in spec,--||--
+19,"When wr is high, wr_data must be valid",wr_data,wr_data == 1 && wr_data != X,High,Protocol,SDT,--||--
+20,rd and wr must NOT be high at the same time,rd_data && wr_data,rd_data != 1 && wr_data != 1,High,Protocol,SDT,--||--
+21,"When either rd or wr is high, addr must be valid",rd_data && wr_data,(rd_data || wr_data) && addr != X,High,Protocol,SDT,--||--
