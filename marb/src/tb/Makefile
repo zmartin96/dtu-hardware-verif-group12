@@ -57,7 +57,8 @@ COMPILE_ARGS += -P$(COCOTB_TOPLEVEL).ADDR_WIDTH=$(ADDR_WIDTH)
 COMPILE_ARGS += -P$(COCOTB_TOPLEVEL).DATA_WIDTH=$(DATA_WIDTH)
 
 # COCOTB_TEST_MODULES is the basename of the Python test file
-COCOTB_TEST_MODULES   := tests.cl_marb_basic_test
+# COCOTB_TEST_MODULES   := tests.cl_marb_basic_test
+COCOTB_TEST_MODULES=cl_marb_tb_base_test
 
 # Move the results generated inside the sim_build directory
 COCOTB_RESULTS_FILE = $(shell pwd)/$(SIM_BUILD)/results.xml
